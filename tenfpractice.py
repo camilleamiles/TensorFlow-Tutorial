@@ -8,7 +8,7 @@ tf.Graph()
 #config=tf.ConfigProto(log_device_placement=True)
 #config=tf.ConfigProto(allow_soft_placement=True)
 
-#datacamp
+#datacamppp
 
 def load_data(data_directory):
 	directories=[d for d in os.listdir(data_directory) 
