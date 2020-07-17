@@ -95,9 +95,34 @@ def main(data):
     # set up counts for histogram, but use logs to see better,
     # and add a smidge so that we can see zeroes off to the left
     x = np.log10(col_nz_counts + 0.0000000001)
+    
 
+    feature_matrix=np.zeros((12536, 106428))
+    for pos, value in enumerate(d['data']):
+        feature_matrix[d['row_index'][pos], d['column_index'][pos]]=value
 
-    #trying to figure stuff out
+    training_labels=np.array(d['labels'])
+    #print(training_labels)
+
+    print(feature_matrix)
+
+    model=tf.keras.models.Sequential([
+        tf.keras.layers.Flatten(input_shape=((,106428))),
+        tf.keras.layers.Dense(17, activation='relu'),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(5)
+        ])
+
+    loss_fn=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    model.compile(optimizer='adam', loss=loss_fn, metrics=['accuracy'])
+
+    from sklearn.model_selection import KFold
+    kf=KFold(n_splits=6, shuffle=True)
+
+    for train_index, test_index in kf.split(feature_matrix):
+        model.fit(feature_matrix[train_index], training_labels[train_index], validation_data=(feature_matrix[test_index], training_labels[test_index]))
+
+    # #trying to figure stuff out
     #plot(go.Figure(
        # data=[go.Histogram(x=x, nbinsx=50)],
         #layout=go.Layout(title='log10 nonzero counts for columns')))
@@ -108,6 +133,8 @@ if __name__ == '__main__':
     boogie = 'training_data.tgz'
     #boogie2 = 'C:\\Users\\camil\\Documents\\GTRI Internship\\training_data.tgz'
     main(boogie)
+
+
 
 
 
