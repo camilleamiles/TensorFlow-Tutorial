@@ -40,8 +40,8 @@ if __name__ == '__main__':
 	#us to work with EagerPy tensors in the following
 
 	##########################################################
-	images, labels = samples(fmodel, dataset="mnist", batchsize=16)
-	images1, labels1=ep.astensors(*samples(fmodel, dataset="mnist", batchsize=16))
+	images, labels = samples(fmodel, dataset="mnist", batchsize=100)
+	images1, labels1=ep.astensors(*samples(fmodel, dataset="mnist", batchsize=100))
 	print(accuracy(fmodel, images1, labels1))
 
 
