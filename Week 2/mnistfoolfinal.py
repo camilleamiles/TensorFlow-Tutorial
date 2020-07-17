@@ -399,3 +399,6 @@ if __name__ == '__main__':
 #0.3 0.0
 #0.5 0.0
 #1.0 0.0
+
+
+#I would recommend DeepFool for finding advs examples because it is efficient and effective
