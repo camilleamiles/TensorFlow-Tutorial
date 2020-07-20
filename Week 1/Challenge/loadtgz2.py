@@ -107,7 +107,7 @@ def main(data):
     print(feature_matrix)
 
     model=tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(input_shape=((,106428))),
+        tf.keras.layers.Flatten(input_shape=((106428,))),
         tf.keras.layers.Dense(17, activation='relu'),
         tf.keras.layers.Dropout(0.2),
         tf.keras.layers.Dense(5)
