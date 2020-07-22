@@ -57,7 +57,8 @@ model.add(Conv2D(6, kernel_size=(5,5), activation='relu', input_shape=input_shap
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Conv2D(10, kernel_size=(5, 5), activation='relu'))
 model.add(Flatten())
-model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu', name='dense128'))
+model.add(Dropout(0.2))
 model.add(Dense(no_classes, activation='softmax'))
 
 #compile the model
@@ -89,14 +90,14 @@ advsinputs=advs1[4] #eps val 0.1... 16, 28, 28, 1
 
 # plot images after the attack
 
-fig, axes =plt.subplots(1,16,figsize=(28,28))
-axes=axes.flatten()
-for img, ax in zip(advsinputs, axes):
-	ax.imshow(np.squeeze(img), cmap="gray")
-	ax.axis("off")
-plt.tight_layout()
-#fig.savefig('afterPGDattack.jpg',bbox_inches='tight', dpi=150)
-plt.show()
+# fig, axes =plt.subplots(1,16,figsize=(28,28))
+# axes=axes.flatten()
+# for img, ax in zip(advsinputs, axes):
+# 	ax.imshow(np.squeeze(img), cmap="gray")
+# 	ax.axis("off")
+# plt.tight_layout()
+# #fig.savefig('afterPGDattack.jpg',bbox_inches='tight', dpi=150)
+# plt.show()
 
 
 
@@ -129,8 +130,43 @@ plt.show()
 from keract import get_activations, display_activations
 keract_inputs=input_test[:1]
 keract_target=target_test[:1]
-activations=get_activations(model, keract_inputs)
-display_activations(activations, cmap='gray', save=False)
+
+
+#group mnist examples
+#target_train[:5]
+trainlabels=np.argmax(target_train, axis=1)
+
+zero_indices=np.where(trainlabels==0)[0]
+one_indices=np.where(trainlabels==1)[0]
+two_indices=np.where(trainlabels==2)[0]
+three_indices=np.where(trainlabels==3)[0]
+four_indices=np.where(trainlabels==4)[0]
+five_indices=np.where(trainlabels==5)[0]
+six_indices=np.where(trainlabels==6)[0]
+seven_indices=np.where(trainlabels==7)[0]
+eight_indices=np.where(trainlabels==8)[0]
+nine_indices=np.where(trainlabels==9)[0]
+
+indices=[zero_indices,one_indices,two_indices,three_indices,four_indices,five_indices,six_indices,seven_indices,eight_indices,nine_indices]
+
+
+
+#keract_target=target_test[:1]
+meanarraylist=[]
+for anum in indices:
+	sumarray=np.zeros(128)
+	for anindex in anum:
+		keract_inputs=input_train[anindex]
+		activations=get_activations(model, keract_inputs.reshape(1,28,28,1), layer_names='dense128', output_format='simple')
+		sumarray=np.add(sumarray,activations['dense128'])
+
+	meanarray=sumarray/len(anum)
+	meanarraylist.append(meanarray)
+#print(meanarraydict)
+
+#activations=get_activations(model, keract_inputs)
+#activations=get_activations(model, keract_inputs, layer_names='dense128', output_format='simple')
+#display_activations(activations, cmap='gray', save=False)
 
 
 #heatmaps
